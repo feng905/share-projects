@@ -17,12 +17,14 @@ INCLUDE_DIRECTORIES(
     /usr/include
     /usr/include/glib-2.0
     /usr/lib/x86_64-linux-gnu/glib-2.0/include
+    /usr/lib64/glib-2.0/include
     /usr/include/gtk-3.0/
     /usr/include/pango-1.0
     /usr/include/cairo
     /usr/include/gdk-pixbuf-2.0
     /usr/include/gio-unix-2.0/
     /usr/include/atk-1.0
+
 )
 
 # add exe
