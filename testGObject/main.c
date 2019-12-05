@@ -31,10 +31,57 @@ void testGobject(){
    g_signal_connect(so,"spice-created",G_CALLBACK(spice_created),so);
 
    //
+   LOGD("begin emit");
    emit_spice_created(so);
+   LOGD("end emit");
 
    //g_object_ref(so);
 }
+
+void testGSocket(){
+    LOGD("testGSocket");
+
+    const char* host = "192.168.199.249";
+    int port = 3389;
+
+    GError*  err = NULL;
+
+#if 0
+    GSocketClient * client = g_socket_client_new();
+    int timeout = g_socket_client_get_timeout(client);
+    LOGD("g_socket_client_get_timeout :%d",timeout);
+    g_socket_client_set_timeout(client,1);
+
+    LOGD("g_socket_client_connect_to_host begin");
+    GSocketConnection *conn = g_socket_client_connect_to_host(client,host,port,NULL,&err);
+    LOGD("g_socket_client_connect_to_host end conn:%p,err:%p,msg:%s",conn,err,err?err->message:"null");
+#else
+    GSocket *socket = g_socket_new(G_SOCKET_FAMILY_IPV4, G_SOCKET_TYPE_STREAM,G_SOCKET_PROTOCOL_TCP,&err);
+    LOGD("g_socket_new socket:%p",socket);
+
+    GSocketAddress *addr = g_inet_socket_address_new_from_string(host,port);
+    LOGD("g_inet_socket_address_new_from_string addr:%p",addr);
+    if(!addr) return;
+
+    //g_socket_set_timeout(socket,1);
+    g_socket_set_blocking(socket,0);
+
+    LOGD("g_socket_connect begin");
+    err = NULL;
+    gboolean b =  g_socket_connect(socket,addr,NULL,&err);
+    //LOGD("g_socket_connect end b:%d,err:%s",b,err?err->message:"null");
+
+    err = NULL;
+    b = g_socket_condition_timed_wait(socket,G_IO_IN | G_IO_OUT | G_IO_NVAL | G_IO_ERR | G_IO_HUP, 1000*200,NULL,&err);
+    LOGD("g_socket_condition_timed_wait end b:%d,err:%s",b,err? err->message: "null");
+    if(err) return;
+
+    err = NULL;
+    b = g_socket_check_connect_result(socket,&err);
+    LOGD("g_socket_check_connect_result b:%d,err:%s",b,err ? err->message : "null");
+#endif
+}
+
 
 int main(int arg0,char** arg1){
    
@@ -72,10 +119,13 @@ int main(int arg0,char** arg1){
         gtk_main();
 #elif 0
         testGobject();
-#else 1
+#elif 1
+        testGSocket();
+#elif 0 
         gtk_init(&arg0, &arg1);
         message_box("sfasgasfwef");
         gtk_main();
+#else
 #endif
 
 
