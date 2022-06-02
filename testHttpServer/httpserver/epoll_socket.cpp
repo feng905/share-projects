@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <sys/epoll.h>
 #include <sys/fcntl.h>
+#include <unistd.h>
 
 #include "simple_log/simple_log.h"
 #include "epoll_socket.h"
@@ -224,7 +225,7 @@ int EpollSocket::close_and_release(int &epollfd, epoll_event &epoll_event, Epoll
     epoll_event.data.ptr = NULL;
 
     int ret;
-    //ret = close(fd);
+    ret = close(fd);
     LOG_DEBUG("connect close complete which fd:%d, ret:%d", fd, ret);
     return ret;
 }
